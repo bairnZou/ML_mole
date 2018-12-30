@@ -51,7 +51,7 @@ with tf.Session() as sess:
     merged = tf.summary.merge_all()
     TrainWriter = tf.summary.FileWriter(os.path.join(energy_est_root, 'Resources', 'Training_log'), sess.graph)
 
-    for epoch in range(0, 20):
+    for epoch in range(0, 11):
         net_id = epoch
         os.mkdir(os.path.join(energy_est_root, 'Resources', 'Model', 'Net') + str(net_id))
         saver.save(sess, os.path.join(energy_est_root, 'Resources', 'Model', 'Net' + str(net_id), 'model.ckpt'))
