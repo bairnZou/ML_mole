@@ -62,4 +62,4 @@ with tf.Session() as sess:
              })
 
         print('itr: ',itr, 'loss: ', test_loss)
-        print('label:',u0_list[0][0], 'output:', output_u0[0][0], 'relative error:', (u0_list[0][0] - output_u0[0][0]) / u0_list[0][0])
+        print('label:', u0_list[0][0], 'output:', output_u0[0][0], 'relative error:', (u0_list[0][0] - output_u0[0][0]) / u0_list[0][0])

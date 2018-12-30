@@ -5,24 +5,25 @@
 import numpy as np
 import pandas as pd
 import csv
-csv.register_dialect('tsv',delimiter='\t',quoting=csv.QUOTE_ALL)
+
+csv.register_dialect('tsv', delimiter = '\t', quoting = csv.QUOTE_ALL)
+
 
 class NpzLoader:
     def __init__(self, file_path):
         self.file_path = file_path
-
+    
     def load_file(self):
         self.npzout = np.load(self.file_path)
         return self.npzout
 
 
-
 class PdLoader:
     def __init__(self, file_path):
         self.file_path = file_path
-
+    
     def load_file(self):
-        pdout = pd.read_csv(self.file_path, sep='\t')
+        pdout = pd.read_csv(self.file_path, sep = '\t')
         return pdout
 
 # example npzloader

@@ -1,6 +1,7 @@
 from DataLoader.FileLoad import *
 import random
 
+
 class QM9Data:
     def __init__(self, data_id, atoms, distance, u0, max_atoms_size):
         self.id = data_id
@@ -18,20 +19,19 @@ class QM9Data:
                     # 无穷大不存在，且不利于神经网络训练，数据集中distace_min = 0.95，100是inv_dis最大值得100倍。近似无穷大
 
 
-
 class DataSet:
     def __init__(self, dataset_name):
         self.dataset_name = dataset_name
         self.data_list = []
         self.length = 0
-
+    
     def add_data(self, qm9data):
         self.data_list.append(qm9data)
         self.length += 1
-
+    
     def shuffle_data(self, shuffle_seed):
-         random.seed(shuffle_seed)
-         random.shuffle(self.data_list)
+        random.seed(shuffle_seed)
+        random.shuffle(self.data_list)
 
 
 class PreProcesser:
@@ -43,9 +43,9 @@ class PreProcesser:
         self.total_data = 0
         self.shuffle_seed = shuffle_seed
         self.max_atoms_size = max_atoms_size
-
+    
     def load_data(self, file_path):
-        print('load data:'+file_path)
+        print('load data:' + file_path)
         npz_loader = NpzLoader(file_path)
         npzout = npz_loader.load_file()
         id_list = npzout[r'ID']

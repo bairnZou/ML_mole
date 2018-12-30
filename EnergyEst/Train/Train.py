@@ -1,6 +1,7 @@
 from DataLoader.PreProcess import *
 from Network.Network import *
 import os
+
 energy_est_root = os.path.abspath(os.path.join(os.path.dirname(__file__), r'..'))
 training_proportion = 0.8  # 训练样本比例
 shuffle_seed = 0  # 将样本打乱顺序的随机种子
@@ -38,24 +39,24 @@ with tf.Session() as sess:
     inv_distances_ = tf.placeholder(tf.float32, [batch_size, max_atom_size, max_atom_size, 1])
     u0_ = tf.placeholder(tf.float32, [batch_size, 1])
     output, loss = qm9net(atoms_, inv_distances_, u0_)
-
+    
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
-
+    
     saver = tf.train.Saver()
     if training_from_scratch:
         sess.run(tf.global_variables_initializer())
     else:
         pass
-
+    
     tf.summary.scalar('Loss', loss)
     merged = tf.summary.merge_all()
     TrainWriter = tf.summary.FileWriter(os.path.join(energy_est_root, 'Resources', 'Training_log'), sess.graph)
-
+    
     for epoch in range(0, 11):
         net_id = epoch
         os.mkdir(os.path.join(energy_est_root, 'Resources', 'Model', 'Net') + str(net_id))
         saver.save(sess, os.path.join(energy_est_root, 'Resources', 'Model', 'Net' + str(net_id), 'model.ckpt'))
-
+        
         for itr in range(0, int(train_set.length / batch_size)):
             atoms_list = []
             inv_distances_list = []
@@ -64,17 +65,17 @@ with tf.Session() as sess:
                 atoms_input = train_set.data_list[itr * batch_size + record].atoms
                 atoms_list.append(atoms_input[:, np.newaxis, np.newaxis])
                 inv_distances_input = train_set.data_list[itr * batch_size + record].inv_distance
-                inv_distances_list.append(inv_distances_input[:,:,np.newaxis])
+                inv_distances_list.append(inv_distances_input[:, :, np.newaxis])
                 u0_input = train_set.data_list[itr * batch_size + record].u0
                 u0_list.append(-(u0_input + 1000) / 1800)
             summary, train_loss, output_u0, _ = \
-                sess.run([merged, loss, output, train_step], feed_dict={
-                     atoms_: atoms_list,
-                     inv_distances_: inv_distances_list,
-                     u0_: u0_list
-                 })
-
+                sess.run([merged, loss, output, train_step], feed_dict = {
+                    atoms_: atoms_list,
+                    inv_distances_: inv_distances_list,
+                    u0_: u0_list
+                    })
+            
             TrainWriter.add_summary(summary, itr + epoch * int(train_set.length / batch_size))
-            print('epoch: ', epoch, 'itr: ',itr, 'loss: ', train_loss)
-            print('label:',u0_list)
+            print('epoch: ', epoch, 'itr: ', itr, 'loss: ', train_loss)
+            print('label:', u0_list)
             print('output:', output_u0)
