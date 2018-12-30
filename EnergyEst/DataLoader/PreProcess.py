@@ -1,5 +1,6 @@
 from DataLoader.FileLoad import *
 import random
+import math
 
 class QM9Data:
     def __init__(self, data_id, atoms, distance, u0, max_atoms_size):
@@ -8,6 +9,7 @@ class QM9Data:
         self.inv_distance = np.zeros([max_atoms_size, max_atoms_size])
         self.u0 = u0
         self.atoms_num = len(atoms)
+        self.cm = np.zeros([max_atoms_size, max_atoms_size])
         for i in range(0, self.atoms_num):
             self.atoms[i] = atoms[i]
             for j in range(0, self.atoms_num):
@@ -16,6 +18,10 @@ class QM9Data:
                 else:
                     self.inv_distance[i][j] = 100
                     # 无穷大不存在，且不利于神经网络训练，数据集中distace_min = 0.95，100是inv_dis最大值得100倍。近似无穷大
+                if i == j:
+                    self.cm[i][j] = 0.5 * math.pow(self.atoms[i], 2.4)
+                else:
+                    self.cm[i][j] = self.atoms[i] * self.atoms[i] * self.inv_distance[i][j]
 
 
 

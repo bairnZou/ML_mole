@@ -1,8 +1,8 @@
 import tensorflow as tf
 
 
-def qm9net(atoms_, inv_distances_, u0_):
-    with tf.variable_scope('qm9_atom_invdis_u0'):
+def qm9net(atoms_, inv_distances_, u0_, cm_):
+    with tf.variable_scope('qm9_atom_invdis_u0_cm'):
 
         with tf.variable_scope('qm9_atoms'):
             output = tf.layers.conv2d_transpose(atoms_, 2, 3, strides=(1, 2), padding='same')
@@ -19,8 +19,8 @@ def qm9net(atoms_, inv_distances_, u0_):
             atoms_output = tf.nn.relu(output)
         with tf.variable_scope('qm9_concat'):
 
-            # bs * 32 * 32 * 3
-            concat_map = tf.concat([atoms_output, inv_distances_], 3)
+            # bs * 32 * 32 * 4
+            concat_map = tf.concat([atoms_output, inv_distances_, cm_], 3)
 
             # bs * 16 * 16 * 16
             output = tf.layers.conv2d(concat_map, 16, 3, strides=(1,1), padding='same')

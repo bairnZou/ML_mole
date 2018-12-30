@@ -36,8 +36,9 @@ all_data = pre_processer.all_data
 with tf.Session() as sess:
     atoms_ = tf.placeholder(tf.float32, [batch_size, max_atom_size, 1, 1])
     inv_distances_ = tf.placeholder(tf.float32, [batch_size, max_atom_size, max_atom_size, 1])
+    cm_ = tf.placeholder(tf.float32, [batch_size, max_atom_size, max_atom_size, 1])
     u0_ = tf.placeholder(tf.float32, [batch_size, 1])
-    output, loss = qm9net(atoms_, inv_distances_, u0_)
+    output, loss = qm9net(atoms_, inv_distances_, u0_, cm_)
 
     train_step = tf.train.AdamOptimizer(1e-4).minimize(loss)
 
@@ -60,6 +61,7 @@ with tf.Session() as sess:
             atoms_list = []
             inv_distances_list = []
             u0_list = []
+            cm_list = []
             for record in range(0, batch_size):
                 atoms_input = train_set.data_list[itr * batch_size + record].atoms
                 atoms_list.append(atoms_input[:, np.newaxis, np.newaxis])
@@ -67,11 +69,14 @@ with tf.Session() as sess:
                 inv_distances_list.append(inv_distances_input[:,:,np.newaxis])
                 u0_input = train_set.data_list[itr * batch_size + record].u0
                 u0_list.append(-(u0_input + 1000) / 1800)
+                cm_input = train_set.data_list[itr * batch_size + record].cm
+                cm_list.append(cm_input[:,:,np.newaxis])
             summary, train_loss, output_u0, _ = \
                 sess.run([merged, loss, output, train_step], feed_dict={
                      atoms_: atoms_list,
                      inv_distances_: inv_distances_list,
-                     u0_: u0_list
+                     u0_: u0_list,
+                     cm_: cm_list
                  })
 
             TrainWriter.add_summary(summary, itr + epoch * int(train_set.length / batch_size))
