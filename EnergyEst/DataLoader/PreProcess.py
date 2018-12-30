@@ -11,11 +11,7 @@ class QM9Data:
         for i in range(0, self.atoms_num):
             self.atoms[i] = atoms[i]
             for j in range(0, self.atoms_num):
-                if distance[i][j] != 0:
-                    self.inv_distance[i][j] = 1 / distance[i][j]
-                else:
-                    self.inv_distance[i][j] = 100
-                    # 无穷大不存在，且不利于神经网络训练，数据集中distace_min = 0.95，100是inv_dis最大值得100倍。近似无穷大
+                self.inv_distance[i][j] = distance[i][j]
 
 
 
