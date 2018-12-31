@@ -6,16 +6,16 @@ def qm9net(atoms_, inv_distances_, u0_, cm_):
 
         with tf.variable_scope('qm9_atoms'):
             output = tf.layers.conv2d_transpose(atoms_, 2, 3, strides=(1, 2), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             output = tf.nn.relu(output)
 
             output = tf.layers.conv2d_transpose(output, 2, 3, strides=(1, 4), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             output = tf.nn.relu(output)
 
             # batchsize * 30 * 30 * 2
             output = tf.layers.conv2d_transpose(output, 2, 3, strides=(1, 4), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             atoms_output = tf.nn.relu(output)
         with tf.variable_scope('qm9_concat'):
 
@@ -24,19 +24,19 @@ def qm9net(atoms_, inv_distances_, u0_, cm_):
 
             # bs * 16 * 16 * 16
             output = tf.layers.conv2d(concat_map, 16, 3, strides=(1,1), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             output = tf.nn.relu(output)
             output = tf.nn.max_pool(output, [1,2,2,1],[1,2,2,1], padding='VALID')
 
             # bs * 8 * 8 * 32
             output = tf.layers.conv2d(output, 32, 3, strides=(1, 1), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             output = tf.nn.relu(output)
             output = tf.nn.max_pool(output, [1, 2, 2, 1], [1, 2, 2, 1], padding='VALID')
 
             # bs * 4 * 4 * 64
             output = tf.layers.conv2d(output, 64, 3, strides=(1, 1), padding='same')
-            output = tf.layers.batch_normalization(output, training=True)
+            # output = tf.layers.batch_normalization(output, training=True)
             output = tf.nn.relu(output)
             output = tf.nn.max_pool(output, [1, 2, 2, 1], [1, 2, 2, 1], padding='VALID')
 

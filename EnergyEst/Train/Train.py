@@ -1,7 +1,9 @@
 from DataLoader.PreProcess import *
 from Network.Network import *
 import os
+import sys
 energy_est_root = os.path.abspath(os.path.join(os.path.dirname(__file__), r'..'))
+sys.path.append(energy_est_root)
 training_proportion = 0.8  # 训练样本比例
 shuffle_seed = 0  # 将样本打乱顺序的随机种子
 max_atom_size = 32  # 原子最大数目，使得网络结构可固定化
